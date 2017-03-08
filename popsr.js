@@ -1,6 +1,6 @@
 /*
- * written by aakpinar
- * v1.69
+ * written by aakpinar at 2012
+ * v1.70
  */
 function loadingPopsr(id,value) {
 	if (!$('.popsr.'+id).length) { var _loadingPopsr = new popsr(popsrLoadingText('<input type="hidden" id="popsrClose" value="2" />İşlemleriniz tamamlanırken lütfen bekleyin.'), {setName:id, modal: true, closeButton: false}); $('#loadingText',_loadingPopsr).html(value); }
@@ -90,8 +90,8 @@ function popsr(data, options) {
 	return _this;
 }
 popsr.prototype = {
-	options: { transparent:false, timeout:15000, setName: '', autoclose: null, buttons: [], callback: null, closeback: null, center: true, closeButton: true, height: 'auto', title: null, titleClass: null, modal: true, modalOpacity: .6, padding:'0', paddingTop: '0', paddingBottom: '0', paddingLeft: '0', paddingRight: '0', dontClose: false, show: true, viewport: {top: '0px', left: '0px'}, width: 'auto', zIndex: 9998, maxHeight:650 },
-	template: function() { return '<div class="popsr '+this.options.transparent+' '+this.options.setName+'" id="popsr'+popsrCount+'"><div class="popsr-box '+this.options.transparent+'"><div class="popsr-wrapper '+this.options.transparent+'"><div class="popsr-titlebox noselect"><div class="popsr-title"></div></div><div class="popsr-content"></div><div class="popsr-footbox"><div class="popsr-actions"></div></div></div></div></div>' },
+	options: { transparent:'', timeout:15000, setName: '', autoclose: null, buttons: [], callback: null, closeback: null, center: true, closeButton: true, height: 'auto', title: null, titleClass: null, modal: true, modalOpacity: .6, padding:'0', paddingTop: '0', paddingBottom: '0', paddingLeft: '0', paddingRight: '0', dontClose: false, show: true, viewport: {top: '0px', left: '0px'}, width: 'auto', zIndex: 9998, maxHeight:650 },
+	template: function() { return '<div class="popsr '+this.options.transparent+' '+this.options.setName+'" id="popsr'+popsrCount+'"><div class="popsr-box '+this.options.transparent+'"><div class="popsr-wrapper '+this.options.transparent+' radius2"><div class="popsr-titlebox noselect"><div class="popsr-title"></div></div><div class="popsr-content"></div><div class="popsr-footbox"><div class="popsr-actions"></div></div></div></div></div>' },
 	content: '<div></div>',
 	visible: false,
 	setContent: function(data) {
@@ -118,9 +118,13 @@ popsr.prototype = {
 			vartop=(($(window).height() - this.popsr.height()) / 2) +	$(window).scrollTop() + "px";
 		}
 		//console.debug(this.popsr.width());
+		var leftpx = (($(window).width() - this.popsr.width()) / 2) + $(window).scrollLeft();
+		//console.debug(leftpx);
+		//console.debug($(window).width());
 		return {
 			top: vartop,
-			left: (($(window).width() - this.popsr.width()) / 2) + $(window).scrollLeft() + "px"
+			left: leftpx + "px",
+			maxwidth: ($(window).width()-20-leftpx) + "px"
 		};
 	},
 	show: function() {
@@ -131,10 +135,10 @@ popsr.prototype = {
 
 		//console.debug(this.options.viewport);
 		if (this.options.viewport.left.replace('px','')<0) {
-			this.popsr.css({top: this.options.viewport.top, left: '5%', maxWidth: '90%'});
+			this.popsr.css({top: this.options.viewport.top, left: '5%', maxWidth: this.options.viewport.maxwidth});
 		} else {
 			this.popsr.css({top: this.options.viewport.top, 'z-index': this.options.zIndex + $('.popsr').length}).show().css({opacity: 1});
-			this.popsr.css({left: this.options.viewport.left,});
+			this.popsr.css({left: this.options.viewport.left, maxWidth: this.options.viewport.maxwidth});
 		}
 
 		this.popsr.css({'z-index': this.options.zIndex + $('.popsr').length}).show().css({opacity: 1});
