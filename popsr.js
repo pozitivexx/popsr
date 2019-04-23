@@ -140,10 +140,11 @@ popsr.prototype = {
 		if (!this.visible) return;
 		var _this = this;
 
+		if (after) after.call();
+
 		_this.popsr.modal( 'hide' ).data( 'bs.modal', null );
 		_this.popsr.remove();
 
-		if (after) after.call();
 		if (!$('.popsr').length) history.pushState("", document.title, window.location.pathname + window.location.search);
 
 		if (_this.options.modal && _this.modal != null) {
