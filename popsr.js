@@ -2,6 +2,7 @@
  * written by aakpinar at 03.08.2012
  * v2.00
  */
+
 var popsrCount = 0;
 function popsr(data, options) {
 	if ($('#popsr' + popsrCount).length) popsrCount++;
@@ -56,10 +57,6 @@ function popsr(data, options) {
 	}
 	if (!_this.options.dontClose) {
 	}
-
-	$(_this.popsr).on("hidden.bs.modal", function () {
-		_this.hide();
-	});
 
 	if (_this.options.autoclose != null) {
 		setTimeout(function (_this) {
@@ -128,8 +125,15 @@ popsr.prototype = {
 		if (this.options.modal && this.modal != null) {
 
 		}
-		this.popsr.appendTo(document.body);
-		this.popsr.css({'z-index': this.options.zIndex + $('.popsr').length}).modal('show');
+		var _this = this;
+
+		_this.popsr.appendTo(document.body);
+		_this.popsr.css({'z-index': this.options.zIndex + $('.popsr').length})
+			.modal('show')
+			.on("hidden.bs.modal", function () {
+				_this.hide();
+			});
+
 		this.visible = true;
 	},
 
@@ -138,15 +142,12 @@ popsr.prototype = {
 		var _this = this;
 
 		_this.popsr.modal( 'hide' ).data( 'bs.modal', null );
-
-		//_this.popsr.remove();
+		_this.popsr.remove();
 
 		if (after) after.call();
 		if (!$('.popsr').length) history.pushState("", document.title, window.location.pathname + window.location.search);
 
-		if (_this.options.modal && _this.modal != null) {
-
-		}
+		if (_this.options.modal && _this.modal != null) {}
 		if (_this.options.closeback != null) _this.options.closeback();
 
 		return this;
