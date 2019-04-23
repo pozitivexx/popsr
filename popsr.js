@@ -133,7 +133,6 @@ popsr.prototype = {
 			.on("hidden.bs.modal", function () {
 				_this.hide();
 			});
-
 		this.visible = true;
 	},
 
@@ -147,7 +146,9 @@ popsr.prototype = {
 		if (after) after.call();
 		if (!$('.popsr').length) history.pushState("", document.title, window.location.pathname + window.location.search);
 
-		if (_this.options.modal && _this.modal != null) {}
+		if (_this.options.modal && _this.modal != null) {
+			//$('.modal-backdrop').remove();
+		}
 		if (_this.options.closeback != null) _this.options.closeback();
 
 		return this;
@@ -165,6 +166,9 @@ $.extend(popsr, {
 		}
 		if ($('.popsr-modal').length) {
 			$('.popsr-modal').remove();
+		}
+		if ($('.modal-backdrop').length) {
+			$('.modal-backdrop').remove();
 		}
 		history.pushState("", document.title, window.location.pathname + window.location.search);
 	},
