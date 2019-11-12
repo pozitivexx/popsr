@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.01
+ * v2.02
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -94,8 +94,8 @@ popsr.prototype = {
 			'<div class="modal-dialog" style="'+(this.options.disableWidth ? 'width:unset':'')+'">' +
 			'<div class="modal-content">' +
 			'<div class="modal-header">' +
-			'<button type="button" class="close" data-dismiss="modal">&times;</button>' +
 			'<div class="modal-title popsr-title"></div>' +
+			'<button type="button" class="close" data-dismiss="modal">&times;</button>' +
 			'</div>' +
 			'<div class="modal-body popsr-content">test</div>' +
 			'<div class="modal-footer"><div class="popsr-actions"></div></div>' +
@@ -241,6 +241,8 @@ $.extend(popsr, {
 			url: url,
 			timeout: options.timeout,
 			cache: false,
+			crossDomain: true,
+			xhrFields: { withCredentials: true },
 			error: function (request, status, error) {
 				console.debug(request.responseText);
 				console.debug(error);
@@ -270,23 +272,14 @@ $.extend(popsr, {
 	},
 	img: function(src, options) {
 		new popsr.loading.create();
-		var img = $(new Image()).attr('src', src);
-		$(img).load(function() {
-			var vp = {width: $(window).width() - 50, height: $(window).height() - 50};
-			var ratio = (this.width > vp.width || this.height > vp.height) ? Math.min(vp.width / this.width, vp.height / this.height) : 1;
-			//$(img).css({width: this.width * ratio, height: this.height * ratio});
-			options = $.extend(options || {}, {
-				show: true, closeButton: true,
-				//width: this.width * ratio, height: this.height * ratio,
-				padding: 0,
-				disableWidth:true,
-			});
-			new popsr.loading.remove();
-			new popsr(img, options);
-		}).error(function() {
-			new popsr.loading.remove();
-			console.log('Error loading ' + src);
-		}).attr('src', src);
+		var img = $(new Image()).attr('src', src).addClass('img-responsive').css({'max-height':'100%', 'max-width':'100%'});
+		new popsr(img, $.extend(options || {}, {
+			show: true, closeButton: true,
+			//width: this.width * ratio, height: this.height * ratio,
+			padding: 0,
+			disableWidth:true,
+		}));
+		new popsr.loading.remove();
 	},
 	update: function (object, options) {
 		options = $.extend(options || {}, {show: true, params: {}});
@@ -369,7 +362,7 @@ $.extend(popsr, {
 });
 $.extend(popsr.loading, {
 	create: function () {
-		var loading = $("<div id='loadingfnc' style='position: fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(255,255,255,0.2);'><img src='" + THEMEURL + "/images/loading.gif' width='30' height='30' style='position: fixed;left: 0;right: 0;margin: auto;top: 50%;transform: translateY(-50%);' /></div>");
+		var loading = $("<div id='loadingfnc' style='position: fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(255,255,255,0.2);'><img src='" + THEMEURL + "images/loading.gif' width='160' height='24' style='position: fixed;left: 0;right: 0;margin: auto;top: 50%;transform: translateY(-50%);' /></div>");
 		loading.appendTo($('body'));
 	},
 	remove: function () {
