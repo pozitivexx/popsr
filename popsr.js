@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.02
+ * v2.03
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -76,6 +76,7 @@ popsr.prototype = {
 		autoclose: null,
 		buttons: [],
 		callback: null,
+		disableClose: false,
 		closeback: null,
 		center: true,
 		closeButton: true,
@@ -90,7 +91,7 @@ popsr.prototype = {
 	},
 	template: function () {
 		return '' +
-			'<div class="modal popsr ' + (this.options.transparent) + ' ' + this.options.setName + '" id="popsr' + popsrCount + '">' +
+			'<div class="modal popsr ' + (this.options.transparent) + ' ' + this.options.setName + '" id="popsr' + popsrCount + '" '+(this.options.disableClose ? 'data-keyboard="false" data-backdrop="static"':'')+'>' +
 			'<div class="modal-dialog" style="'+(this.options.disableWidth ? 'width:unset':'')+'">' +
 			'<div class="modal-content">' +
 			'<div class="modal-header">' +
@@ -138,6 +139,7 @@ popsr.prototype = {
 		var _this = this;
 
 		_this.popsr.modal( 'hide' ).data( 'bs.modal', null );
+
 		//_this.popsr.remove();
 
 		if (after) after.call();
@@ -228,9 +230,11 @@ $.extend(popsr, {
 			}
 		});
 	},
+
 	loading: function (x) {
 		console.debug(x);
 	},
+
 	load: function (url, options) {
 		options = $.extend(options || {}, {show: true, params: {}});
 		var loadObject = new popsr('loading', options);
