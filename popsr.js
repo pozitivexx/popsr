@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.03
+ * v2.04
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -140,8 +140,6 @@ popsr.prototype = {
 
 		_this.popsr.modal( 'hide' ).data( 'bs.modal', null );
 
-		//_this.popsr.remove();
-
 		if (after) after.call();
 		if (!$('.popsr').length) history.pushState("", document.title, window.location.pathname + window.location.search);
 
@@ -149,6 +147,8 @@ popsr.prototype = {
 
 		}
 		if (_this.options.closeback != null) _this.options.closeback();
+
+		window.setTimeout(function(){_this.popsr.remove()},200);
 
 		return this;
 	},
@@ -364,6 +364,7 @@ $.extend(popsr, {
 		}
 	}
 });
+
 $.extend(popsr.loading, {
 	create: function () {
 		var loading = $("<div id='loadingfnc' style='position: fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(255,255,255,0.2);'><img src='" + THEMEURL + "images/loading.gif' width='160' height='24' style='position: fixed;left: 0;right: 0;margin: auto;top: 50%;transform: translateY(-50%);' /></div>");

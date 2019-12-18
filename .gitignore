@@ -2,4 +2,7 @@
 .idea
 .idea/
 .idea/*
+.idea/copyright
 .idea/workspace.xml
+.idea/deployment.xml
+.idea/modules.xml
