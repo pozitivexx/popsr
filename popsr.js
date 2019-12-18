@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.04
+ * v2.05
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -138,7 +138,7 @@ popsr.prototype = {
 		if (!this.visible) return;
 		var _this = this;
 
-		_this.popsr.modal( 'hide' ).data( 'bs.modal', null );
+		_this.popsr.modal( 'hide' ).data( 'bs.modal', null ).remove();
 
 		if (after) after.call();
 		if (!$('.popsr').length) history.pushState("", document.title, window.location.pathname + window.location.search);
@@ -147,8 +147,6 @@ popsr.prototype = {
 
 		}
 		if (_this.options.closeback != null) _this.options.closeback();
-
-		window.setTimeout(function(){_this.popsr.remove()},200);
 
 		return this;
 	},
@@ -159,13 +157,8 @@ popsr.prototype = {
 };
 
 $.extend(popsr, {
-	close: function(){
-		if ($('.popsr').length) {
-			$('.popsr').remove();
-		}
-		if ($('.popsr-modal').length) {
-			$('.popsr-modal').remove();
-		}
+	close: function(obj){
+		$('.popsr').modal('hide').remove();
 		history.pushState("", document.title, window.location.pathname + window.location.search);
 	},
 	alert: function (data, options) {
