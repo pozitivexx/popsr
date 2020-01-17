@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.05
+ * v2.06
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -108,7 +108,7 @@ popsr.prototype = {
 	visible: false,
 	setContent: function (data) {
 		if (jQuery.type(data) !== "object") {
-			if (typeof this.options.type !== "undefined" && this.options.type == 'iframe') {
+			if (typeof this.options.type !== "undefined" && this.options.type === 'iframe') {
 
 			} else {
 				if (typeof data !== "undefined") {
@@ -264,7 +264,7 @@ $.extend(popsr, {
 	},
 
 	iframe: function (url, options) {
-		options = $.extend(options || {type: 'iframe'}, {show: true, params: {}});
+		options = $.extend(options || {}, {type: 'iframe', show: true, params: {}});
 		loadObject = new popsr('<iframe src="' + url + '" frameborder="0" style="" />', options);
 	},
 	img: function(src, options) {
