@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.06
+ * v2.07
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -30,8 +30,8 @@ function popsr(data, options) {
 
 	if (_this.options.buttons.length > 0) {
 		for (var i = 0; i < _this.options.buttons.length; i++) {
-			var cls = (_this.options.buttons[i]["class"]) ? _this.options.buttons[i]["class"] : '';
-			var btn = $('<span class="btnbox"><button id="" class="btn btn-primary ' + cls + '" href="#">' + _this.options.buttons[i].label + '</button></span>')
+			var cls = typeof(_this.options.buttons[i]["class"])!=='undefined' && _this.options.buttons[i]["class"].length ? _this.options.buttons[i]["class"] : 'btn btn-success';
+			var btn = $('<span class="btnbox"><button id="" class="' + cls + '" href="#">' + _this.options.buttons[i].label + '</button></span>')
 				.data('value', _this.options.buttons[i].val);
 			btn.bind("click", function () {
 				var e = $.data(this, "value");
