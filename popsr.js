@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.07
+ * v2.08
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -8,6 +8,11 @@ function popsr(data, options) {
 	var _this = this;
 	_this.options = $.extend({}, popsr.prototype.options, options || {});
 	_this.popsr = $(_this.template());
+
+	if (_this.options.dataobject!==null && !data.length){
+		data = _this.options.dataobject.html();
+	}
+
 	_this.setContent(data);
 
 	_this.options.transparent = _this.options.transparent == null || _this.options.transparent == '' || !_this.options.transparent ? "" : " tbg";
@@ -70,6 +75,7 @@ function popsr(data, options) {
 }
 popsr.prototype = {
 	options: {
+		dataobject: null,
 		transparent: '',
 		timeout: 15000,
 		setName: '',
