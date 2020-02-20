@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.08
+ * v2.09
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -13,6 +13,9 @@ function popsr(data, options) {
 		data = _this.options.dataobject.html();
 	}
 
+	if (data==="loading"){
+		data = $("<div id='loadingfnc' style='position: fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(255,255,255,0.2);'><img src='" + THEMEURL + "images/loading.gif' style='height:100%;width:auto;position: fixed;left: 0;right: 0;margin: auto;top: 50%;transform: translateY(-50%);' /></div>");
+	}
 	_this.setContent(data);
 
 	_this.options.transparent = _this.options.transparent == null || _this.options.transparent == '' || !_this.options.transparent ? "" : " tbg";
