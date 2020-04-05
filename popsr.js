@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.09
+ * v2.10
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -107,7 +107,7 @@ popsr.prototype = {
 			'<div class="modal-title popsr-title"></div>' +
 			'<button type="button" class="close" data-dismiss="modal">&times;</button>' +
 			'</div>' +
-			'<div class="modal-body popsr-content">test</div>' +
+			'<div class="modal-body popsr-content"></div>' +
 			'<div class="modal-footer"><div class="popsr-actions"></div></div>' +
 			'</div>' +
 			'</div>' +
@@ -147,6 +147,12 @@ popsr.prototype = {
 		if (!this.visible) return;
 		var _this = this;
 
+		if (typeof (after)==='undefined'){
+			if(_this.options.callback !== null){
+				_this.options.callback(0);
+			}
+		}
+
 		_this.popsr.modal( 'hide' ).data( 'bs.modal', null ).remove();
 
 		if (after) after.call();
@@ -180,8 +186,8 @@ $.extend(popsr, {
 	},
 	ask: function (data, callback, options) {
 		var buttons = [
-			{id: 'yes', label: 'Yes', val: 'Y', "class": 'btn-success'},
-			{id: 'no', label: 'No', val: 'N', "class": 'btn-danger'},
+			{id: 'yes', label: 'Yes', val: 'Y', "class": 'btn btn-success'},
+			{id: 'no', label: 'No', val: 'N', "class": 'btn btn-danger'},
 		];
 		options = $.extend({
 			closeButton: false, modal: true, buttons: buttons, callback: function () {

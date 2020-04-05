@@ -1,4 +1,11 @@
 .popsr {
+	.modal-title {
+		font-weight: 300;
+		font-size: 2em;
+		font-family:$font-family_regular;
+		line-height: 30px;
+	}
+
 	.modal-header {
 		&.onlybtn {
 			position: absolute;
@@ -9,12 +16,26 @@
 	}
 
 	.modal-content {
-		display:inline-block;
+		display: inline-block;
 	}
 
 	.modal-body iframe {
 		width: 100%;
 		height: 100%;
+	}
+
+	.modal-dialog {
+		max-width: 100%;
+		display: table;
+		margin: 30px auto;
+		width: auto;
+
+		@include md {
+			width: 90%;
+		}
+		@include xs {
+			width: 100%;
+		}
 	}
 
 	&.fw {
