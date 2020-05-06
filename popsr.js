@@ -14,7 +14,7 @@ function popsr(data, options) {
 	}
 
 	if (data==="loading"){
-		data = $("<div id='loadingfnc' style='position: fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(255,255,255,0.2);'><img src='" + THEMEURL + "images/loading.gif' style='height:100%;width:auto;position: fixed;left: 0;right: 0;margin: auto;top: 50%;transform: translateY(-50%);' /></div>");
+		data = $("<div id='loadingfnc' style='position: fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(255,255,255,0.2);'><img src='" + THEMEURL + "images/loading.gif' style='width:auto;position: fixed;left: 0;right: 0;margin: auto;top: 50%;transform: translateY(-50%);' /></div>");
 	}
 	_this.setContent(data);
 
@@ -101,7 +101,7 @@ popsr.prototype = {
 	template: function () {
 		return '' +
 			'<div class="modal popsr ' + (this.options.transparent) + ' ' + this.options.setName + '" id="popsr' + popsrCount + '" '+(this.options.disableClose ? 'data-keyboard="false" data-backdrop="static"':'')+'>' +
-			'<div class="modal-dialog" style="'+(this.options.disableWidth ? 'width:unset':'')+'">' +
+			'<div class="modal-dialog" style="'+(this.options.disableWidth ? 'max-width:unset':'')+'">' +
 			'<div class="modal-content">' +
 			'<div class="modal-header">' +
 			'<div class="modal-title popsr-title"></div>' +
@@ -135,11 +135,18 @@ popsr.prototype = {
 	},
 	show: function () {
 		if (this.visible) return;
-		if (this.options.modal && this.modal != null) {
 
-		}
 		this.popsr.appendTo(document.body);
-		this.popsr.css({'z-index': this.options.zIndex + $('.popsr').length}).modal('show');
+		var zIndex = parseInt(this.options.zIndex) + ($('.popsr').length*2) + 1;
+		this.popsr.css({'z-index': zIndex});
+
+		if (this.options.modal && this.modal !== null) {
+			this.popsr.on('shown.bs.modal', function () {
+				$(this).next('.modal-backdrop').css('z-index', zIndex - 1);
+			});
+		}
+
+		this.popsr.modal('show');
 		this.visible = true;
 	},
 
