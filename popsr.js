@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.10
+ * v2.111
  */
 var popsrCount = 0;
 function popsr(data, options) {
@@ -101,7 +101,7 @@ popsr.prototype = {
 	template: function () {
 		return '' +
 			'<div class="modal popsr ' + (this.options.transparent) + ' ' + this.options.setName + '" id="popsr' + popsrCount + '" '+(this.options.disableClose ? 'data-keyboard="false" data-backdrop="static"':'')+'>' +
-			'<div class="modal-dialog" style="'+(this.options.disableWidth ? 'max-width:unset':'')+'">' +
+			'<div class="modal-dialog container" style="'+(this.options.disableWidth ? 'max-width:unset!important':'')+'">' +
 			'<div class="modal-content">' +
 			'<div class="modal-header">' +
 			'<div class="modal-title popsr-title"></div>' +
@@ -250,7 +250,7 @@ $.extend(popsr, {
 		console.debug(x);
 	},
 
-	load: function (url, options) {
+	load: function (url, options, after) {
 		options = $.extend(options || {}, {show: true, params: {}});
 		var loadObject = new popsr('loading', options);
 
@@ -275,12 +275,14 @@ $.extend(popsr, {
 					loadObject = new popsr(html, options);
 				}
 
-				if (html.length == 0) {
+				if (html.length === 0) {
 					loadObject.hide();
 				}
-				else {
 
+				if (typeof (after)!=='undefined' && after){
+					after.call();
 				}
+
 			}
 		});
 	},
