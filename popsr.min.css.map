@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAEE,4BAAU,CACT,QAAQ,CAAE,QAAQ,CAClB,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC",
-"sources": ["popsr.scss"],
-"names": [],
-"file": "popsr.min.css"
-}

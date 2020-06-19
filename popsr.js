@@ -1,24 +1,29 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.111
+ * v2.114
  */
 var popsrCount = 0;
 function popsr(data, options) {
 	if ($('#popsr' + popsrCount).length) popsrCount++;
 	var _this = this;
 	_this.options = $.extend({}, popsr.prototype.options, options || {});
-	_this.popsr = $(_this.template());
 
-	if (_this.options.dataobject!==null && !data.length){
+	if (_this.options.dataobject !== null && !data.length) {
 		data = _this.options.dataobject.html();
 	}
 
-	if (data==="loading"){
-		data = $("<div id='loadingfnc' style='position: fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(255,255,255,0.2);'><img src='" + THEMEURL + "images/loading.gif' style='width:auto;position: fixed;left: 0;right: 0;margin: auto;top: 50%;transform: translateY(-50%);' /></div>");
+	if (data === "loading") {
+		data = $("<div id='loadingfnc' style=''><img src='" + THEMEURL + "images/loading.gif' style='' /></div>");
 	}
+
+	if (_this.options.disableClose) {
+		_this.options.closeButton = false;
+	}
+
+	_this.options.transparent = _this.options.transparent == null || _this.options.transparent == '' || !_this.options.transparent ? "" : (typeof (_this.options.transparent) === 'boolean' ? ' tbg' : ' ' + _this.options.transparent);
+	_this.popsr = $(_this.template());
 	_this.setContent(data);
 
-	_this.options.transparent = _this.options.transparent == null || _this.options.transparent == '' || !_this.options.transparent ? "" : " tbg";
 
 	if (_this.options.title == null) {
 		$('.popsr-titlebox', _this.popsr).remove();
@@ -38,16 +43,19 @@ function popsr(data, options) {
 
 	if (_this.options.buttons.length > 0) {
 		for (var i = 0; i < _this.options.buttons.length; i++) {
-			var cls = typeof(_this.options.buttons[i]["class"])!=='undefined' && _this.options.buttons[i]["class"].length ? _this.options.buttons[i]["class"] : 'btn btn-success';
-			var btn = $('<span class="btnbox"><button id="" class="' + cls + '" href="#">' + _this.options.buttons[i].label + '</button></span>')
-				.data('value', _this.options.buttons[i].val);
-			btn.bind("click", function () {
-				var e = $.data(this, "value");
-				var t = _this.options.callback != null ? function () {
-					_this.options.callback(e)
-				} : null;
-				_this.hide(t)
-			});
+			var cls = typeof(_this.options.buttons[i]["class"]) !== 'undefined' && _this.options.buttons[i]["class"].length ? _this.options.buttons[i]["class"] : 'btn btn-success';
+			var btn = $('<button id="" class="btnbox ' + cls + '" href="#">' + _this.options.buttons[i].label + '</button>')
+				.data('value', _this.options.buttons[i].val)
+				.bind("click", function () {
+					var e = $.data(this, "value");
+
+					/* run callback with value here after set null */
+					if (_this.options.callback !== null){
+						_this.options.callback(e);
+						_this.options.callback=null;
+					}
+					_this.hide(null)
+				});
 			$('.popsr-actions', this.popsr).append(btn);
 		}
 	} else {
@@ -60,9 +68,7 @@ function popsr(data, options) {
 
 	if (_this.options.show) {
 		_this.show();
-		$('.btnbox button').focus();
-	}
-	if (!_this.options.dontClose) {
+		$('.popsr-actions button:first-child').focus();
 	}
 
 	$(_this.popsr).on("hidden.bs.modal", function () {
@@ -93,22 +99,21 @@ popsr.prototype = {
 		titleClass: null,
 		modal: true,
 		modalOpacity: .6,
-		dontClose: false,
 		show: true,
 		zIndex: 9998,
-		disableWidth:false,
+		disableWidth: false,
 	},
 	template: function () {
 		return '' +
-			'<div class="modal popsr ' + (this.options.transparent) + ' ' + this.options.setName + '" id="popsr' + popsrCount + '" '+(this.options.disableClose ? 'data-keyboard="false" data-backdrop="static"':'')+'>' +
-			'<div class="modal-dialog container" style="'+(this.options.disableWidth ? 'max-width:unset!important':'')+'">' +
+			'<div class="modal popsr ' + (this.options.transparent) + ' ' + this.options.setName + '" id="popsr' + popsrCount + '" ' + (this.options.disableClose ? 'data-keyboard="false" data-backdrop="static"' : '') + '>' +
+			'<div class="modal-dialog container" style="' + (this.options.disableWidth ? 'max-width:unset!important' : '') + '">' +
 			'<div class="modal-content">' +
 			'<div class="modal-header">' +
 			'<div class="modal-title popsr-title"></div>' +
-			'<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+			(this.options.closeButton ? '<button type="button" class="close" data-dismiss="modal">&times;</button>' : '') +
 			'</div>' +
 			'<div class="modal-body popsr-content"></div>' +
-			'<div class="modal-footer"><div class="popsr-actions"></div></div>' +
+			'<div class="modal-footer popsr-actions"></div>' +
 			'</div>' +
 			'</div>' +
 			'</div>';
@@ -137,7 +142,7 @@ popsr.prototype = {
 		if (this.visible) return;
 
 		this.popsr.appendTo(document.body);
-		var zIndex = parseInt(this.options.zIndex) + ($('.popsr').length*2) + 1;
+		var zIndex = parseInt(this.options.zIndex) + ($('.popsr').length * 2) + 1;
 		this.popsr.css({'z-index': zIndex});
 
 		if (this.options.modal && this.modal !== null) {
@@ -154,13 +159,13 @@ popsr.prototype = {
 		if (!this.visible) return;
 		var _this = this;
 
-		if (typeof (after)==='undefined'){
-			if(_this.options.callback !== null){
+		if (typeof (after) === 'undefined') {
+			if (_this.options.callback !== null) {
 				_this.options.callback(0);
 			}
 		}
 
-		_this.popsr.modal( 'hide' ).data( 'bs.modal', null ).remove();
+		_this.popsr.modal('hide').data('bs.modal', null).remove();
 
 		if (after) after.call();
 		if (!$('.popsr').length) history.pushState("", document.title, window.location.pathname + window.location.search);
@@ -179,14 +184,21 @@ popsr.prototype = {
 };
 
 $.extend(popsr, {
-	close: function(obj){
-		$('.popsr').modal('hide').remove();
+	close: function (obj) {
+		if (typeof obj === 'string') {
+			var popsr_obj = $('.popsr.' + obj);
+		} else {
+			var popsr_obj = $('.popsr');
+		}
+		popsr_obj.modal('hide').remove();
 		history.pushState("", document.title, window.location.pathname + window.location.search);
 	},
 	alert: function (data, options) {
 		var buttons = [{id: 'ok', label: 'OK', val: 'OK'}];
 		options = $.extend({
-			closeButton: false, buttons: buttons, callback: function () {
+			closeButton: false,
+			buttons: buttons,
+			callback: function () {
 			}
 		}, options || {}, {show: true});
 		return new popsr(data, options);
@@ -197,9 +209,16 @@ $.extend(popsr, {
 			{id: 'no', label: 'No', val: 'N', "class": 'btn btn-danger'},
 		];
 		options = $.extend({
-			closeButton: false, modal: true, buttons: buttons, callback: function () {
-			}
-		}, options || {}, {show: true, callback: callback});
+				closeButton: false,
+				modal: true,
+				buttons: buttons,
+				callback: function () {
+				}
+			}, options || {},
+			{
+				show: true,
+				callback: callback
+			});
 		return new popsr(data, options);
 	},
 	json: function (url, options, callback) {
@@ -227,7 +246,6 @@ $.extend(popsr, {
 					location.href = URL + json.redirect;
 					popsr.close();
 				} else {
-					//console.debug(json);
 					if (typeof json.content === "undefined" || json.content.length == 0) {
 						loadObject.hide();
 					} else {
@@ -261,7 +279,7 @@ $.extend(popsr, {
 			timeout: options.timeout,
 			cache: false,
 			crossDomain: true,
-			xhrFields: { withCredentials: true },
+			xhrFields: {withCredentials: true},
 			error: function (request, status, error) {
 				console.debug(request.responseText);
 				console.debug(error);
@@ -279,7 +297,7 @@ $.extend(popsr, {
 					loadObject.hide();
 				}
 
-				if (typeof (after)!=='undefined' && after){
+				if (typeof (after) !== 'undefined' && after) {
 					after.call();
 				}
 
@@ -291,14 +309,17 @@ $.extend(popsr, {
 		options = $.extend(options || {}, {type: 'iframe', show: true, params: {}});
 		loadObject = new popsr('<iframe src="' + url + '" frameborder="0" style="" />', options);
 	},
-	img: function(src, options) {
+	img: function (src, options) {
 		new popsr.loading.create();
-		var img = $(new Image()).attr('src', src).addClass('img-responsive').css({'max-height':'100%', 'max-width':'100%'});
+		var img = $(new Image()).attr('src', src).addClass('img-responsive').css({
+			'max-height': '100%',
+			'max-width': '100%'
+		});
 		new popsr(img, $.extend(options || {}, {
 			show: true, closeButton: true,
 			//width: this.width * ratio, height: this.height * ratio,
 			padding: 0,
-			disableWidth:true,
+			disableWidth: true,
 		}));
 		new popsr.loading.remove();
 	},
@@ -306,7 +327,6 @@ $.extend(popsr, {
 		options = $.extend(options || {}, {show: true, params: {}});
 
 		if ($(object).length) {
-			//console.debug($(object));
 			$(object).attr('data-oldvalue', $(object).val());
 			$(object).addClass('popsr-Update');
 
@@ -384,10 +404,12 @@ $.extend(popsr, {
 
 $.extend(popsr.loading, {
 	create: function () {
-		var loading = $("<div id='loadingfnc' style='position: fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:rgba(255,255,255,0.2);'><img src='" + THEMEURL + "images/loading.gif' width='160' height='24' style='position: fixed;left: 0;right: 0;margin: auto;top: 50%;transform: translateY(-50%);' /></div>");
-		loading.appendTo($('body'));
+		new popsr('loading', {
+			disableClose: true,
+			transparent: true
+		});
 	},
 	remove: function () {
-		$('#loadingfnc').remove();
+		$('#loadingfnc').closest('.popsr').modal('toggle');
 	}
 });
