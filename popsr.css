@@ -28,7 +28,8 @@
   text-align: left;
   display: inline-block;
   width: auto;
-  margin: 0 auto; }
+  margin: 0 auto;
+  padding: 20px; }
 .popsr.tbg .modal-content {
   background: none;
   box-shadow: none;
@@ -88,7 +89,8 @@
   width: 100%;
   height: 100%;
   z-index: 10000;
-  background: rgba(255, 255, 255, 0.2); }
+  background: rgba(255, 255, 255, 0.2);
+  text-align: center; }
   .popsr .loadingfnc img {
     width: auto;
     height: auto;

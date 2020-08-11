@@ -35,7 +35,7 @@ $font-family_regular: arial !default;
 		width: auto;
 		height: 100%;
 		display: flex;
-		align-items: safe center; //center yapınca uzun içerik sözleşme de başlık yukarıda kalıyor
+		align-items: safe center;
 		justify-content: space-between; //center
 		word-break: break-word;
 
@@ -57,6 +57,13 @@ $font-family_regular: arial !default;
 		display: inline-block;
 		width: auto;
 		margin: 0 auto;
+		padding: 20px;
+
+		@if mixin-exists(md) {
+			@include md {
+				padding: 0;
+			}
+		}
 	}
 
 	&.tbg {
@@ -139,6 +146,7 @@ $font-family_regular: arial !default;
 		height: 100%;
 		z-index: 10000;
 		background: rgba(255, 255, 255, 0.2);
+		text-align: center;
 
 		img {
 			width: auto;

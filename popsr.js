@@ -1,14 +1,16 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.114
+ * v2.12
  */
+
+var $ = jQuery.noConflict();
 var popsrCount = 0;
-function popsr(data, options) {
+window.popsr = function (data, options) {
 	if ($('#popsr' + popsrCount).length) popsrCount++;
 	var _this = this;
 	_this.options = $.extend({}, popsr.prototype.options, options || {});
 
-	if (_this.options.dataobject !== null && !data.length) {
+	if (_this.options.dataobject !== null && (!data || !data.length)) {
 		data = _this.options.dataobject.html();
 	}
 
@@ -20,25 +22,34 @@ function popsr(data, options) {
 		_this.options.closeButton = false;
 	}
 
-	_this.options.transparent = _this.options.transparent == null || _this.options.transparent == '' || !_this.options.transparent ? "" : (typeof (_this.options.transparent) === 'boolean' ? ' tbg' : ' ' + _this.options.transparent);
+	_this.options.transparent =
+		_this.options.transparent === null ||
+		_this.options.transparent === '' ||
+		!_this.options.transparent ?
+			"" :
+			(
+				typeof (_this.options.transparent) === 'boolean' ?
+					' tbg' :
+					' ' + _this.options.transparent
+			);
+
 	_this.popsr = $(_this.template());
 	_this.setContent(data);
 
-
-	if (_this.options.title == null) {
+	if (_this.options.title === null) {
 		$('.popsr-titlebox', _this.popsr).remove();
 		$('.modal-header', _this.popsr).addClass('onlybtn');
 	} else {
-		if (_this.options.titleLink == null) {
-			$('.popsr-title', _this.popsr).append(_this.options.title);
-		} else {
-			$('.popsr-title', _this.popsr).append('<a href="' + _this.options.titleLink + '">' + _this.options.title + '</a>');
-		}
+		$('.popsr-title', _this.popsr).append(
+			_this.options.titleLink === null ?
+				_this.options.title :
+				'<a href="' + _this.options.titleLink + '">' + _this.options.title + '</a>'
+		);
 		if ((_this.options.buttons.length === 0 && !_this.options.autoclose) || _this.options.closeButton) {
 			if (_this.options.closeButton) {
 			}
 		}
-		if (_this.options.titleClass != null) $('.popsr-titlebox', this.popsr).addClass(_this.options.titleClass); else $('.popsr-titlebox', this.popsr).addClass('anim');
+		if (_this.options.titleClass !== null) $('.popsr-titlebox', this.popsr).addClass(_this.options.titleClass); else $('.popsr-titlebox', this.popsr).addClass('anim');
 	}
 
 	if (_this.options.buttons.length > 0) {
@@ -50,9 +61,9 @@ function popsr(data, options) {
 					var e = $.data(this, "value");
 
 					/* run callback with value here after set null */
-					if (_this.options.callback !== null){
+					if (_this.options.callback !== null) {
 						_this.options.callback(e);
-						_this.options.callback=null;
+						_this.options.callback = null;
 					}
 					_this.hide(null)
 				});
@@ -61,7 +72,7 @@ function popsr(data, options) {
 	} else {
 		$('.modal-footer', this.popsr).remove();
 	}
-	if (_this.options.buttons.length === 0 && _this.options.title == null && !_this.options.autoclose) {
+	if (_this.options.buttons.length === 0 && _this.options.title === null && !_this.options.autoclose) {
 		if (_this.options.closeButton) {
 		}
 	}
@@ -75,19 +86,21 @@ function popsr(data, options) {
 		_this.hide();
 	});
 
-	if (_this.options.autoclose != null) {
+	if (_this.options.autoclose !== null) {
 		setTimeout(function (_this) {
 			_this.hide();
 		}, _this.options.autoclose, this);
 	}
 	return _this;
-}
+};
+
 popsr.prototype = {
 	options: {
 		dataobject: null,
 		transparent: '',
 		timeout: 15000,
 		setName: '',
+		afterShow: null,
 		autoclose: null,
 		buttons: [],
 		callback: null,
@@ -97,6 +110,7 @@ popsr.prototype = {
 		closeButton: true,
 		title: null,
 		titleClass: null,
+		parent: null,
 		modal: true,
 		modalOpacity: .6,
 		show: true,
@@ -121,7 +135,7 @@ popsr.prototype = {
 	content: '<div></div>',
 	visible: false,
 	setContent: function (data) {
-		if (jQuery.type(data) !== "object") {
+		if (typeof(data) !== "object") {
 			if (typeof this.options.type !== "undefined" && this.options.type === 'iframe') {
 
 			} else {
@@ -136,12 +150,14 @@ popsr.prototype = {
 		$('.popsr-content', this.popsr)
 			.empty()
 			.append(data)
-			.trigger("contentchange");
+			.trigger("contentchange")
+		;
 	},
 	show: function () {
 		if (this.visible) return;
 
-		this.popsr.appendTo(document.body);
+		this.popsr.appendTo(this.options.parent !== null ? this.options.parent : document.body);
+
 		var zIndex = parseInt(this.options.zIndex) + ($('.popsr').length * 2) + 1;
 		this.popsr.css({'z-index': zIndex});
 
@@ -153,6 +169,14 @@ popsr.prototype = {
 
 		this.popsr.modal('show');
 		this.visible = true;
+
+		this.popsr.animate({
+			scrollTop: 0
+		}, 100);
+
+		if (typeof this.options.afterShow === 'function') {
+			this.options.afterShow(this.popsr);
+		}
 	},
 
 	hide: function (after) {
@@ -170,10 +194,10 @@ popsr.prototype = {
 		if (after) after.call();
 		if (!$('.popsr').length) history.pushState("", document.title, window.location.pathname + window.location.search);
 
-		if (_this.options.modal && _this.modal != null) {
+		if (_this.options.modal && _this.modal !== null) {
 
 		}
-		if (_this.options.closeback != null) _this.options.closeback();
+		if (_this.options.closeback !== null) _this.options.closeback();
 
 		return this;
 	},
@@ -185,11 +209,7 @@ popsr.prototype = {
 
 $.extend(popsr, {
 	close: function (obj) {
-		if (typeof obj === 'string') {
-			var popsr_obj = $('.popsr.' + obj);
-		} else {
-			var popsr_obj = $('.popsr');
-		}
+		var popsr_obj = typeof obj === 'string' ? $('.popsr.' + obj) : $('.popsr');
 		popsr_obj.modal('hide').remove();
 		history.pushState("", document.title, window.location.pathname + window.location.search);
 	},
@@ -220,6 +240,9 @@ $.extend(popsr, {
 				callback: callback
 			});
 		return new popsr(data, options);
+	},
+	exist: function () {
+		return $('.popsr').length;
 	},
 	json: function (url, options, callback) {
 		options = $.extend(options || {}, {show: true, params: {}});
@@ -265,7 +288,6 @@ $.extend(popsr, {
 	},
 
 	loading: function (x) {
-		console.debug(x);
 	},
 
 	load: function (url, options, after) {
@@ -404,12 +426,18 @@ $.extend(popsr, {
 
 $.extend(popsr.loading, {
 	create: function () {
+		if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
+			console.debug("jQuery popsr: Blocked safari");
+			return false;
+		}
 		new popsr('loading', {
 			disableClose: true,
 			transparent: true
 		});
 	},
 	remove: function () {
-		$('#loadingfnc').closest('.popsr').modal('toggle');
+		if ($('#loadingfnc').length){
+			$('#loadingfnc').closest('.popsr').modal('toggle');
+		}
 	}
 });
