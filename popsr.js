@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.12
+ * v2.13
  */
 
 var $ = jQuery.noConflict();
@@ -55,18 +55,25 @@ window.popsr = function (data, options) {
 	if (_this.options.buttons.length > 0) {
 		for (var i = 0; i < _this.options.buttons.length; i++) {
 			var cls = typeof(_this.options.buttons[i]["class"]) !== 'undefined' && _this.options.buttons[i]["class"].length ? _this.options.buttons[i]["class"] : 'btn btn-success';
-			var btn = $('<button id="" class="btnbox ' + cls + '" href="#">' + _this.options.buttons[i].label + '</button>')
+
+			var btn = $('<button id="" class="btnbox ' + cls + '" href="#">' + _this.options.buttons[i].label + '</button>');
+			if(typeof _this.options.buttons[i].val==='string'){
+				btn.data('value', _this.options.buttons[i].val);
+			}
+
+			btn
 				.data('value', _this.options.buttons[i].val)
-				.bind("click", function () {
-					var e = $.data(this, "value");
+				.bind("click", {val: _this.options.buttons[i].val}, function (e) {
+					var result = typeof e.data.val==='function' ? e.data.val() : $.data(this, "value");
 
 					/* run callback with value here after set null */
 					if (_this.options.callback !== null) {
-						_this.options.callback(e);
+						_this.options.callback(result);
 						_this.options.callback = null;
 					}
 					_this.hide(null)
 				});
+
 			$('.popsr-actions', this.popsr).append(btn);
 		}
 	} else {
@@ -329,7 +336,7 @@ $.extend(popsr, {
 
 	iframe: function (url, options) {
 		options = $.extend(options || {}, {type: 'iframe', show: true, params: {}});
-		loadObject = new popsr('<iframe src="' + url + '" frameborder="0" style="" />', options);
+		loadObject = new popsr('<iframe src="' + url + '" name="'+options.setName+'" frameborder="0" style="" />', options);
 	},
 	img: function (src, options) {
 		new popsr.loading.create();
