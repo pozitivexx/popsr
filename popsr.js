@@ -1,6 +1,6 @@
 /*
  * written by aakpinar at 03.08.2012
- * v2.14
+ * v2.15
  */
 
 var $ = jQuery.noConflict();
@@ -103,7 +103,7 @@ window.popsr = function (data, options) {
 	_this.popsr.data({popsr: _this});
 	/* usage */
 	//$('.popsr').data("popsr").hide()
-	if (_this.options.afterInit !==null){
+	if (_this.options.afterInit !== null) {
 		_this.options.afterInit(_this.popsr);
 	}
 
@@ -114,7 +114,7 @@ popsr.prototype = {
 	options: {
 		dataobject: null,
 		transparent: '',
-		timeout: 15000,
+		timeout: 120000,
 		setName: '',
 		afterShow: null,
 		autoclose: null,
@@ -137,7 +137,7 @@ popsr.prototype = {
 	},
 	template: function () {
 		return '' + // fade
-			'<div data-backdrop="'+(this.options.modal?'true':'false')+'" class="modal popsr ' + (this.options.transparent) + ' ' + this.options.setName + '" id="popsr' + popsrCount + '" ' + (this.options.disableClose ? 'data-keyboard="false" data-backdrop="static"' : '') + '>' +
+			'<div data-backdrop="' + (this.options.modal ? 'true' : 'false') + '" class="modal popsr ' + (this.options.transparent) + ' ' + this.options.setName + '" id="popsr' + popsrCount + '" ' + (this.options.disableClose ? 'data-keyboard="false" data-backdrop="static"' : '') + '>' +
 			'<div class="modal-dialog container" style="' + (this.options.disableWidth ? 'max-width:unset!important' : '') + '">' +
 			'<div class="modal-content">' +
 			'<div class="modal-header">' +
@@ -201,7 +201,7 @@ popsr.prototype = {
 	hide: function (after) {
 		if (!this.visible) return;
 		//console.trace();
-		this.visible=false;
+		this.visible = false;
 		var _this = this;
 
 		if (typeof (after) === 'undefined') {
@@ -247,7 +247,11 @@ $.extend(popsr, {
 		if (typeof obj === 'object') {
 			popsr_obj = obj;
 		}
-		$(popsr_obj).data("popsr").hide();
+		if (popsr_obj.length) {
+			$(popsr_obj).each(function () {
+				$(this).data("popsr").hide();
+			});
+		}
 	},
 	alert: function (data, options) {
 		var buttons = [{id: 'ok', label: 'OK', val: 'OK'}];
@@ -387,15 +391,17 @@ $.extend(popsr, {
 
 	iframe: function (url, options) {
 		window.popsr_loadingobj = new popsr.loading.create({
-			modal:false
+			modal: false
 		});
-		options = $.extend(options || {}, {type: 'iframe', show: true, params: {}, afterInit:function(popsr){
-			$(function(){
-				$('iframe', popsr).on('load', function(){
-					window.popsr_loadingobj.hide();
+		options = $.extend(options || {}, {
+			type: 'iframe', show: true, params: {}, afterInit: function (popsr) {
+				$(function () {
+					$('iframe', popsr).on('load', function () {
+						window.popsr_loadingobj.hide();
+					});
 				});
-			});
-		}});
+			}
+		});
 		return new popsr('<iframe src="' + url + '" name="' + (typeof(options.setName) !== 'undefined' ? options.setName : '') + '" frameborder="0" style="" />', options);
 	},
 	img: function (src, options) {
